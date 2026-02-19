@@ -27,3 +27,11 @@ class UserOut(BaseModel):
     role: Role
 
     model_config = {"from_attributes": True}
+    
+class CategoryOut(BaseModel):
+    id: int
+    name: str
+    slug: str 
+    
+    model_config = {"from_attributes": True}
+    
