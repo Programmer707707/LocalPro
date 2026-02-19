@@ -27,11 +27,16 @@ class UserOut(BaseModel):
     role: Role
 
     model_config = {"from_attributes": True}
-    
+   
+   
+# Category 
 class CategoryOut(BaseModel):
     id: int
     name: str
     slug: str 
     
     model_config = {"from_attributes": True}
+    
+class CategoryCreate(BaseModel):
+    name: str = Field(min_length=2, max_length=120)
     
