@@ -1,5 +1,5 @@
 import enum
-from sqlalchemy import String, Enum, Table, Column, Text, ForeignKey, Integer
+from sqlalchemy import String, Enum, Table, Column, Text, ForeignKey, Integer, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db import Base
 
@@ -17,6 +17,19 @@ class User(Base):
     last_name: Mapped[str] = mapped_column(String(100), nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     role: Mapped[UserRole] = mapped_column(Enum(UserRole, name="user_role"), nullable=False, default=UserRole.customer)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    
+    customer_profile = relationship(
+        "CustomerProfile",
+        back_populates="user",
+        uselist=False
+    )
+
+    professional_profile = relationship(
+        "ProfessionalProfile",
+        back_populates="user",
+        uselist=False
+    )
     
 class Category(Base):
     __tablename__ = "categories"
@@ -44,7 +57,7 @@ class CustomerProfile(Base):
     phone: Mapped[str | None] = mapped_column(String(40), nullable=True)
     profile_image_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
 
-    user = relationship("User")
+    user = relationship("User", back_populates="customer_profile")
 
 class ProfessionalProfile(Base):
     __tablename__ = "professional_profiles"
@@ -63,5 +76,5 @@ class ProfessionalProfile(Base):
     phone: Mapped[str | None] = mapped_column(String(40), nullable=True)
     profile_image_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
 
-    user = relationship("User")
+    user = relationship("User", back_populates="professional_profile")
     categories = relationship("Category", secondary=professional_profile_categories, lazy="joined")

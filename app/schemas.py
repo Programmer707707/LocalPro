@@ -81,3 +81,26 @@ class ProfessionalProfileUpdate(BaseModel):
     phone: str | None = None
     profile_image_url: str | None = None
     category_ids: list[int] | None = None
+
+#helper schema
+class UserPublicOut(BaseModel):
+    first_name: str
+    last_name: str
+    email: EmailStr
+
+    model_config = {"from_attributes": True}
+
+#Public schema for professional
+class ProfessionalPublicOut(BaseModel):
+    user_id: int
+    user: UserPublicOut
+    city: str
+    service_areas: str
+    years_experience: int
+    bio: str | None
+    starting_price: int | None
+    phone: str | None
+    profile_image_url: str | None
+    categories: list[CategoryOut]
+
+    model_config = {"from_attributes": True}

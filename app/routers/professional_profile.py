@@ -1,12 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-
+from sqlalchemy.orm import Session, joinedload
+from typing import List, Annotated
 from app.deps import get_db
 from app.deps import get_current_user
-from app.models import ProfessionalProfile, Category, User
-from app.schemas import ProfessionalProfileOut, ProfessionalProfileUpdate
+from app.models import ProfessionalProfile, Category, User, UserRole
+from app.schemas import ProfessionalProfileOut, ProfessionalProfileUpdate, ProfessionalPublicOut
 
 router = APIRouter(prefix="/professionals", tags=["professionals"])
+
+@router.get("/", response_model=List[ProfessionalPublicOut])
+def get_all_professionals(db: Annotated[Session, Depends(get_db)]):
+    professionals = db.query(ProfessionalProfile).options(joinedload(ProfessionalProfile.user), joinedload(ProfessionalProfile.categories)).order_by(ProfessionalProfile.id.asc()).all()
+    return professionals
 
 @router.get("/me", response_model=ProfessionalProfileOut)
 def get_my_profile(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
@@ -58,4 +63,23 @@ def upsert_my_profile(
 
     db.commit()
     db.refresh(profile)
+    return profile
+
+
+@router.get("/{professional_user_id}", response_model=ProfessionalPublicOut)
+def get_public_professional_profile(professional_user_id: int, db: Session = Depends(get_db)):
+    profile = (
+        db.query(ProfessionalProfile)
+        .join(User, User.id == ProfessionalProfile.user_id)
+        .options(joinedload(ProfessionalProfile.user), joinedload(ProfessionalProfile.categories))
+        .filter(
+            ProfessionalProfile.user_id == professional_user_id,
+            User.is_active == True,
+            User.role == UserRole.professional
+        ).first()
+    )
+    
+    if not profile:
+        raise HTTPException(status_code=404, detail="Professional not found")
+    
     return profile
