@@ -37,7 +37,3 @@ def login(data: LoginIn, db: Session = Depends(get_db)):
 
     token = create_access_token(subject=str(user.id), role=user.role.value)
     return TokenOut(access_token=token)
-
-@router.get("/me", response_model=UserOut)
-def me(user: User = Depends(get_current_user)):
-    return user
