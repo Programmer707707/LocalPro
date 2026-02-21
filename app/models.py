@@ -1,7 +1,8 @@
 import enum
-from sqlalchemy import String, Enum, Table, Column, Text, ForeignKey, Integer, Boolean
+from sqlalchemy import String, Enum, Table, Column, Text, ForeignKey, Integer, Boolean, DateTime, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db import Base
+from datetime import datetime
 
 class UserRole(str, enum.Enum):
     customer = "customer"
@@ -78,3 +79,38 @@ class ProfessionalProfile(Base):
 
     user = relationship("User", back_populates="professional_profile")
     categories = relationship("Category", secondary=professional_profile_categories, lazy="joined")
+
+
+#Review Model
+class Review(Base):
+    __tablename__ = "reviews"
+    
+    id: Mapped[int] = mapped_column(primary_key=True)
+    
+    professional_user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id"),
+        nullable=False,
+        index=True
+    )
+
+    customer_user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id"),
+        nullable=False,
+        index=True
+    )
+
+    rating: Mapped[int] = mapped_column(Integer, nullable=False)
+    comment: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now()
+    )
+
+    __table_args__ = (
+        UniqueConstraint(
+            "professional_user_id",
+            "customer_user_id",
+            name="unique_customer_review"
+        ),
+    )

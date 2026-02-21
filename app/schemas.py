@@ -1,5 +1,6 @@
 from typing import Optional, Literal
 from pydantic import BaseModel, Field, EmailStr
+from datetime import datetime
 
 Role = Literal["customer", "professional", "admin"]
 
@@ -104,3 +105,21 @@ class ProfessionalPublicOut(BaseModel):
     categories: list[CategoryOut]
 
     model_config = {"from_attributes": True}
+    
+
+#Rating schemas
+class ReviewCreate(BaseModel):
+    rating: int = Field(ge=1, le=5)
+    comment: str | None = Field(default=None, max_length=1000)
+    
+class ReviewOut(BaseModel):
+    id: int 
+    rating: int 
+    comment: str 
+    created_at: datetime
+    
+    model_config = {"from_attributes": True} 
+
+class RatingSummaryOut(BaseModel):
+    average_rating: float 
+    review_count: int
