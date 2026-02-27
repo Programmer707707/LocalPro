@@ -90,22 +90,8 @@ class UserPublicOut(BaseModel):
     email: EmailStr
 
     model_config = {"from_attributes": True}
-
-#Public schema for professional
-class ProfessionalPublicOut(BaseModel):
-    user_id: int
-    user: UserPublicOut
-    city: str
-    service_areas: str
-    years_experience: int
-    bio: str | None
-    starting_price: int | None
-    phone: str | None
-    profile_image_url: str | None
-    categories: list[CategoryOut]
-
-    model_config = {"from_attributes": True}
     
+
 
 #Rating schemas
 class ReviewCreate(BaseModel):
@@ -123,3 +109,22 @@ class ReviewOut(BaseModel):
 class RatingSummaryOut(BaseModel):
     average_rating: float 
     review_count: int
+    
+
+#Public schema for professional
+class ProfessionalPublicOut(BaseModel):
+    user_id: int
+    user: UserPublicOut
+    city: str
+    service_areas: str
+    years_experience: int
+    bio: str | None
+    starting_price: int | None
+    phone: str | None
+    profile_image_url: str | None
+    categories: list[CategoryOut]
+    
+    rating: RatingSummaryOut
+
+    model_config = {"from_attributes": True}
+    

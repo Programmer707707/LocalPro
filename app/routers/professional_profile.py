@@ -1,17 +1,47 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import func, desc, asc
 from sqlalchemy.orm import Session, joinedload
-from typing import List, Annotated
+from typing import List, Annotated, Literal
 from app.deps import get_db
 from app.deps import get_current_user
-from app.models import ProfessionalProfile, Category, User, UserRole
+from app.models import ProfessionalProfile, Category, User, UserRole, Review
 from app.schemas import ProfessionalProfileOut, ProfessionalProfileUpdate, ProfessionalPublicOut
 
 router = APIRouter(prefix="/professionals", tags=["professionals"])
 
 @router.get("/", response_model=List[ProfessionalPublicOut])
 def get_all_professionals(db: Annotated[Session, Depends(get_db)]):
-    professionals = db.query(ProfessionalProfile).options(joinedload(ProfessionalProfile.user), joinedload(ProfessionalProfile.categories)).order_by(ProfessionalProfile.id.asc()).all()
-    return professionals
+    avg_rating = func.coalesce(func.avg(Review.rating), 0.0).label("average_rating")
+    review_count = func.count(Review.id).label("review_count")
+    
+    query = (
+        db.query(ProfessionalProfile, avg_rating, review_count)
+        .join(User, User.id == ProfessionalProfile.user_id)
+        .outerjoin(Review, Review.professional_user_id == ProfessionalProfile.user_id)
+        .options(
+            joinedload(ProfessionalProfile.user),
+            joinedload(ProfessionalProfile.categories),
+        )
+        .filter(
+            User.is_active == True,
+            User.role == UserRole.professional,
+        )
+        .group_by(ProfessionalProfile.id, User.id)
+    )
+    professionals = query.all()
+    
+    return [
+        {
+            **profile.__dict__, 
+            "user": profile.user,
+            "categories": profile.categories,
+            "rating": {
+                "average_rating": avg,
+                "review_count": count
+            }
+        }
+        for (profile, avg, count) in professionals
+    ]
 
 @router.get("/me", response_model=ProfessionalProfileOut)
 def get_my_profile(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
@@ -66,7 +96,97 @@ def upsert_my_profile(
     return profile
 
 
-@router.get("/{professional_user_id}", response_model=ProfessionalPublicOut)
+
+SortOption = Literal["rating_desc", "price_asc", "price_desc", "newest"]
+
+@router.get("/search", response_model=list[ProfessionalPublicOut])
+def search_professionals(
+    db: Session = Depends(get_db),
+
+    city: str | None = Query(default=None),
+    category_slug: str | None = Query(default=None),
+
+    min_price: int | None = Query(default=None, ge=0),
+    max_price: int | None = Query(default=None, ge=0),
+
+    sort: SortOption = Query(default="rating_desc"),
+
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=10, ge=1, le=50),
+):
+
+    avg_rating = func.coalesce(func.avg(Review.rating), 0.0).label("average_rating")
+    review_count = func.count(Review.id).label("review_count")
+
+    query = (
+        db.query(ProfessionalProfile, avg_rating, review_count)
+        .join(User, User.id == ProfessionalProfile.user_id)
+        .outerjoin(Review, Review.professional_user_id == ProfessionalProfile.user_id)
+        .options(
+            joinedload(ProfessionalProfile.user),
+            joinedload(ProfessionalProfile.categories),
+        )
+        .filter(
+            User.is_active == True,
+            User.role == UserRole.professional,
+        )
+        .group_by(ProfessionalProfile.id, User.id)
+    )
+
+    #Filtering funcitonality
+    if city:
+        query = query.filter(
+            func.lower(ProfessionalProfile.city) == func.lower(city)
+        )
+
+    if min_price is not None:
+        query = query.filter(ProfessionalProfile.starting_price >= min_price)
+
+    if max_price is not None:
+        query = query.filter(ProfessionalProfile.starting_price <= max_price)
+
+    if category_slug:
+        query = query.join(ProfessionalProfile.categories).filter(
+            Category.slug == category_slug
+        )
+
+    #Sorting part
+    if sort == "rating_desc":
+        query = query.order_by(desc(avg_rating))
+    elif sort == "price_asc":
+        query = query.order_by(asc(ProfessionalProfile.starting_price))
+    elif sort == "price_desc":
+        query = query.order_by(desc(ProfessionalProfile.starting_price))
+    elif sort == "newest":
+        query = query.order_by(desc(ProfessionalProfile.id))
+
+    #Pagination section
+    query = query.offset((page - 1) * page_size).limit(page_size)
+
+    results = query.all()
+
+    return [
+        {
+            "user_id": profile.user_id,
+            "user": profile.user,
+            "city": profile.city,
+            "service_areas": profile.service_areas,
+            "years_experience": profile.years_experience,
+            "bio": profile.bio,
+            "starting_price": profile.starting_price,
+            "phone": profile.phone,
+            "profile_image_url": profile.profile_image_url,
+            "categories": profile.categories,
+            "rating": {
+                "average_rating": float(avg or 0.0),
+                "review_count": int(count or 0),
+            },
+        }
+        for (profile, avg, count) in results
+    ]
+
+
+@router.get("/public/{professional_user_id}", response_model=ProfessionalPublicOut)
 def get_public_professional_profile(professional_user_id: int, db: Session = Depends(get_db)):
     profile = (
         db.query(ProfessionalProfile)
@@ -83,3 +203,4 @@ def get_public_professional_profile(professional_user_id: int, db: Session = Dep
         raise HTTPException(status_code=404, detail="Professional not found")
     
     return profile
+
