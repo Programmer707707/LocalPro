@@ -34,6 +34,9 @@ def login(data: LoginIn, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == data.email).first()
     if not user or not verify_password(data.password, user.password_hash):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid_credentials")
+    
+    if not user.is_active:
+        raise HTTPException(status_code=403, detail="account_disabled")
 
     token = create_access_token(subject=str(user.id), role=user.role.value)
     return TokenOut(access_token=token)

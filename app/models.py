@@ -79,6 +79,7 @@ class ProfessionalProfile(Base):
 
     user = relationship("User", back_populates="professional_profile")
     categories = relationship("Category", secondary=professional_profile_categories, lazy="joined")
+    portfolio_images = relationship("ProfessionalPortfolioImage", back_populates="professional_profile", cascade="all, delete-orphan")
 
 
 #Review Model
@@ -114,3 +115,16 @@ class Review(Base):
             name="unique_customer_review"
         ),
     )
+    
+    
+#Portfolio Images 
+class ProfessionalPortfolioImage(Base):
+    __tablename__ = "professional_portfolio_images"
+    
+    id: Mapped[int] = mapped_column(primary_key=True)
+    professional_profile_id: Mapped[int] = mapped_column(ForeignKey("professional_profiles.id"), index=True, nullable=False)
+    url: Mapped[str] = mapped_column(String(600), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    
+    professional_profile = relationship("ProfessionalProfile", back_populates="portfolio_images")
+    

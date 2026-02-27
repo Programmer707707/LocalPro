@@ -6,6 +6,10 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 60 * 24 * 7
     
+    imagekit_public_key: str
+    imagekit_private_key: str
+    imagekit_url_endpoint: str
+    
     class Config:
         env_file = ".env"
 

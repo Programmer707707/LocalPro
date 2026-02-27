@@ -111,6 +111,21 @@ class RatingSummaryOut(BaseModel):
     review_count: int
     
 
+#Portfolio schemas
+class ProfileImageUpdate(BaseModel):
+    profile_image_url: str
+
+class PortfolioImageCreate(BaseModel):
+    url: str
+
+class PortfolioImageOut(BaseModel):
+    id: int
+    url: str
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
 #Public schema for professional
 class ProfessionalPublicOut(BaseModel):
     user_id: int
@@ -125,6 +140,8 @@ class ProfessionalPublicOut(BaseModel):
     categories: list[CategoryOut]
     
     rating: RatingSummaryOut
+    portfolio: list[PortfolioImageOut]
 
     model_config = {"from_attributes": True}
     
+

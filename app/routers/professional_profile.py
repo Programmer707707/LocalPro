@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session, joinedload
 from typing import List, Annotated, Literal
 from app.deps import get_db
 from app.deps import get_current_user
-from app.models import ProfessionalProfile, Category, User, UserRole, Review
-from app.schemas import ProfessionalProfileOut, ProfessionalProfileUpdate, ProfessionalPublicOut
+from app.models import ProfessionalProfile, Category, User, UserRole, Review, ProfessionalPortfolioImage
+from app.schemas import ProfessionalProfileOut, ProfessionalProfileUpdate, ProfessionalPublicOut, ProfileImageUpdate, PortfolioImageCreate, PortfolioImageOut
 
 router = APIRouter(prefix="/professionals", tags=["professionals"])
 
@@ -191,7 +191,7 @@ def get_public_professional_profile(professional_user_id: int, db: Session = Dep
     profile = (
         db.query(ProfessionalProfile)
         .join(User, User.id == ProfessionalProfile.user_id)
-        .options(joinedload(ProfessionalProfile.user), joinedload(ProfessionalProfile.categories))
+        .options(joinedload(ProfessionalProfile.user), joinedload(ProfessionalProfile.categories), joinedload(ProfessionalProfile.portfolio_images))
         .filter(
             ProfessionalProfile.user_id == professional_user_id,
             User.is_active == True,
@@ -204,3 +204,41 @@ def get_public_professional_profile(professional_user_id: int, db: Session = Dep
     
     return profile
 
+
+@router.patch("/me/profile-image", response_model=ProfessionalProfileOut)
+def update_professional_profile_image( data: ProfileImageUpdate, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    if user.role != UserRole.professional:
+        raise HTTPException(status_code=403, detail="forbidden")
+
+    profile = db.query(ProfessionalProfile).filter(ProfessionalProfile.user_id == user.id).first()
+    if not profile:
+        raise HTTPException(status_code=404, detail="professional_profile_not_found")
+
+    profile.profile_image_url = data.profile_image_url
+    db.commit()
+    db.refresh(profile)
+    return profile
+
+
+@router.post("/me/portfolio", response_model=list[PortfolioImageOut])
+def add_portfolio_image(data: PortfolioImageCreate, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    if user.role != UserRole.professional:
+        raise HTTPException(status_code=403, detail="forbidden")
+    
+    profile = db.query(ProfessionalProfile).filter(ProfessionalProfile.user_id == user.id).first()
+    if not profile:
+        raise HTTPException(status_code=404, detail="professional_profile_not_found")
+    
+    current_count = db.query(ProfessionalPortfolioImage).filter(ProfessionalPortfolioImage.professional_profile_id == profile.id).count()
+    if current_count >= 3:
+        raise HTTPException(status_code=400, detail="portfolio_limit_reached")
+    
+    img = ProfessionalPortfolioImage(professional_profile_id = profile.id, url = data.url)
+    db.add(img)
+    db.commit()
+    
+    portfolio = db.query(ProfessionalPortfolioImage).filter(
+        ProfessionalPortfolioImage.professional_profile_id == profile.id
+    ).order_by(ProfessionalPortfolioImage.id.asc()).all()
+    
+    return portfolio
