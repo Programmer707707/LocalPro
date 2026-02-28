@@ -128,3 +128,17 @@ class ProfessionalPortfolioImage(Base):
     
     professional_profile = relationship("ProfessionalProfile", back_populates="portfolio_images")
     
+
+#Favorites
+class Favorite(Base):
+    __tablename__ = "favorites"
+    __table_args__ = (UniqueConstraint("customer_user_id", "professional_user_id", name="uq_customer_professional"))
+    
+    id: Mapped[int] = mapped_column(primary_key=True)
+    customer_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    professional_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now, nullable=False)
+    
+    professional = relationship("User", foreign_keys=[professional_user_id])
+    
+    

@@ -13,7 +13,8 @@ from app.views import (
     CustomerProfileAdmin, ProfessionalProfileAdmin, PortfolioImageAdmin
 )
 
-#source for adminauth: https://aminalaee.github.io/sqladmin/authentication/
+#source for AdminAuth: https://aminalaee.github.io/sqladmin/authentication/
+
 class AdminAuth(AuthenticationBackend):
     async def login(self, request: Request) -> bool:
         form = await request.form()

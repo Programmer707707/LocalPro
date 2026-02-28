@@ -17,7 +17,6 @@ app.add_middleware(
     secret_key=settings.secret_key,
 )
 
-
 setup_admin(app)
 
 app.include_router(auth_router)

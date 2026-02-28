@@ -40,3 +40,7 @@ def login(data: LoginIn, db: Session = Depends(get_db)):
 
     token = create_access_token(subject=str(user.id), role=user.role.value)
     return TokenOut(access_token=token)
+
+@router.post("/logout")
+def logout(user: User = Depends(get_current_user)):
+    return {"status": "ok"}

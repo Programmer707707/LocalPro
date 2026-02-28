@@ -145,3 +145,10 @@ class ProfessionalPublicOut(BaseModel):
     model_config = {"from_attributes": True}
     
 
+#Favorites
+class FavoriteOut(BaseModel):
+    professional_user_id: int 
+    professional: UserPublicOut
+    created_at: datetime
+    
+    model_config = {"from_attributes": True}
