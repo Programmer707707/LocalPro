@@ -38,7 +38,7 @@ class Category(Base):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String(120), nullable=False, unique=True)
     slug: Mapped[str] = mapped_column(String(140), nullable=False, unique=True, index=True)
-    
+    suggestions: Mapped[str] = mapped_column(Text, nullable=False, server_default="")
     
 #many-to-many relationship association prof <-> cat
 professional_profile_categories = Table(

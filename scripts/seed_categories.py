@@ -1,47 +1,52 @@
 import re
-from sqlalchemy.orm import Session
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app.db import SessionLocal
 from app.models import Category
-
-CATEGORIES = [
-    "Plumbing",
-    "Electrical",
-    "Carpentry",
-    "Painting",
-    "Heating & Gas",
-    "Appliance Repair",
-    "Furniture Assembly",
-    "Tiling",
-    "Locksmith",
-    "Cleaning",
-    "Gardening",
-    "Moving Help",
-    "Windows & Doors",
-]
+from sqlalchemy import text
 
 def slugify(text: str) -> str:
-    s = text.lower().strip()
-    s = re.sub(r"[^a-z0-9]+", "-", s)
-    s = re.sub(r"-{2,}", "-", s).strip("-")
-    return s
+    return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
 
-def main():
-    db: Session = SessionLocal()
+CATEGORIES = [
+    ("Construction & Repair", "plumbing, electrical, painting, roofing, flooring, welding, tiling, carpentry, masonry, waterproofing, locksmith, windows and doors"),
+    ("Auto Services", "car wash, oil change, tire repair, auto detailing, engine repair, brake service, battery replacement, car painting"),
+    ("Appliance Repair", "washing machine, refrigerator, air conditioner, tv repair, microwave, dishwasher, oven repair, water heater"),
+    ("Household Services", "house cleaning, gardening, pest control, moving, furniture assembly, window cleaning, pool cleaning, laundry"),
+    ("Education & Courses", "math tutoring, language lessons, music lessons, driving school, coding, drawing, cooking classes, yoga"),
+    ("Marketing & Advertising", "social media, seo, graphic design, video production, copywriting, photo editing, logo design, content creation, video montage"),
+    ("Legal & Finance", "legal consultation, tax services, accounting, notary, insurance, business registration, contract drafting"),
+    ("Beauty & Health", "haircut, massage, manicure, makeup, personal training, nail art, eyebrow design, facial, pedicure, hair coloring"),
+]
+
+def seed():
+    db = SessionLocal()
     try:
-        existing = {c.slug for c in db.query(Category).all()}
-        added = 0
-        for name in CATEGORIES:
-            slug = slugify(name)
-            if slug in existing:
-                continue
-            db.add(Category(name=name, slug=slug))
-            existing.add(slug)
-            added += 1
+        """
+        db.execute(text("DELETE FROM professional_profile_categories"))
         db.commit()
-        print(f"seeded {added} categories")
+        print("Cleared professional_profile_categories")
+        """
+        db.execute(text("TRUNCATE TABLE professional_profile_categories RESTART IDENTITY CASCADE"))
+        db.execute(text("TRUNCATE TABLE categories RESTART IDENTITY CASCADE"))
+        db.commit()
+        print("Cleared and reset IDs")
+        
+        db.query(Category).delete()
+        db.commit()
+        print("Cleared old categories")
+
+        for name, suggestions in CATEGORIES:
+            slug = slugify(name)
+            db.add(Category(name=name, slug=slug, suggestions=suggestions))
+            print(f"{name}")
+
+        db.commit()
+        print("\nDone")
     finally:
         db.close()
 
 if __name__ == "__main__":
-    main()
+    seed()

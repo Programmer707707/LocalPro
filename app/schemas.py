@@ -1,5 +1,5 @@
 from typing import Optional, Literal
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field, EmailStr, field_validator
 from datetime import datetime
 
 Role = Literal["customer", "professional", "admin"]
@@ -41,8 +41,15 @@ class CategoryOut(BaseModel):
     id: int
     name: str
     slug: str 
+    suggestions: list[str]
     
     model_config = {"from_attributes": True}
+    @field_validator("suggestions", mode="before")
+    @classmethod
+    def parse_suggestions(cls, v):
+        if isinstance(v, str):
+            return [s.strip() for s in v.split(",") if s.strip()]
+        return v
     
 class CategoryCreate(BaseModel):
     name: str = Field(min_length=2, max_length=120)
