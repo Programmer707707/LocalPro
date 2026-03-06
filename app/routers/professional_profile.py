@@ -242,3 +242,39 @@ def add_portfolio_image(data: PortfolioImageCreate, db: Session = Depends(get_db
     ).order_by(ProfessionalPortfolioImage.id.asc()).all()
     
     return portfolio
+
+
+@router.get('/me/completeness')
+def get_profile_completeness(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    if user.role != UserRole.professional:
+        raise HTTPException(status_code=403, detail="forbidden")
+
+    profile = db.query(ProfessionalProfile).filter(
+        ProfessionalProfile.user_id == user.id
+    ).first()
+    if not profile:
+        raise HTTPException(status_code=404, detail="profile_not_found")
+
+    fields = {
+        "first_name":       bool(user.first_name),
+        "last_name":        bool(user.last_name),
+        "city":             bool(profile.city),
+        "phone":            bool(profile.phone),
+        "bio":              bool(profile.bio),
+        "profile_image":    bool(profile.profile_image_url),
+        "categories":       bool(profile.categories),
+        "portfolio_images": bool(profile.portfolio_images),
+        "starting_price":   bool(profile.starting_price),
+        "service_areas":    bool(profile.service_areas),
+    }
+
+    completed = [k for k, v in fields.items() if v]
+    missing = [k for k, v in fields.items() if not v]
+    percentage = int((len(completed) / len(fields)) * 100)
+
+    return {
+        "percentage": percentage,
+        "completed": completed,
+        "missing": missing,
+        "is_complete": percentage == 100,
+    }
