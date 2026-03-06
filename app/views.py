@@ -5,7 +5,8 @@ from app.models import (
     ProfessionalProfile,
     ProfessionalPortfolioImage,
     Category,
-    Review
+    Review,
+    Report
 )
 
 #configurations' source: https://aminalaee.github.io/sqladmin/configurations/
@@ -63,3 +64,20 @@ class PortfolioImageAdmin(ModelView, model=ProfessionalPortfolioImage):
     name = "Portfolio Image"
     name_plural = "Portfolio Images"
     icon = "fa-solid fa-image"
+    
+    
+class ReportAdmin(ModelView, model=Report):
+    column_list = [
+        Report.id,
+        Report.reporter_user_id,
+        Report.reported_user_id,
+        Report.reported_review_id,
+        Report.reason,
+        Report.status,
+        Report.created_at
+    ]
+    
+    column_sortable_list = [Report.id, Report.status, Report.reason, Report.created_at]
+    name = "Report"
+    name_plural = "Reports"
+    icon = "fa-solid fa-flag"

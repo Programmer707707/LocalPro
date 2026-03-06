@@ -10,7 +10,7 @@ from app.config import settings
 from app.models import (User, UserRole)
 from app.views import (
     UserAdmin, CategoryAdmin, ReviewAdmin,
-    CustomerProfileAdmin, ProfessionalProfileAdmin, PortfolioImageAdmin
+    CustomerProfileAdmin, ProfessionalProfileAdmin, PortfolioImageAdmin, ReportAdmin
 )
 
 #source for AdminAuth: https://aminalaee.github.io/sqladmin/authentication/
@@ -62,3 +62,4 @@ def setup_admin(app):
     admin.add_view(CustomerProfileAdmin)       
     admin.add_view(ProfessionalProfileAdmin)   
     admin.add_view(PortfolioImageAdmin)        
+    admin.add_view(ReportAdmin)        

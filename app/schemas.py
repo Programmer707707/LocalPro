@@ -1,5 +1,6 @@
 from typing import Optional, Literal
 from pydantic import BaseModel, Field, EmailStr, field_validator
+from app.models import ReportStatus, ReportReason
 from datetime import datetime
 
 Role = Literal["customer", "professional", "admin"]
@@ -158,4 +159,23 @@ class FavoriteOut(BaseModel):
     professional: UserPublicOut
     created_at: datetime
     
+    model_config = {"from_attributes": True}
+    
+    
+#Reports
+class ReportProfileCreate(BaseModel):
+    reason: ReportReason
+    comment: str | None = Field(default=None, max_length=500)
+
+class ReportReviewCreate(BaseModel):
+    reason: ReportReason
+    comment: str | None = Field(default=None, max_length=500)
+
+class ReportOut(BaseModel):
+    id: int
+    reason: ReportReason
+    status: ReportStatus
+    comment: str | None
+    created_at: datetime
+
     model_config = {"from_attributes": True}

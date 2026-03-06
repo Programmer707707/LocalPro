@@ -143,4 +143,34 @@ class Favorite(Base):
     
     professional = relationship("User", foreign_keys=[professional_user_id])
     
+
+#Report Profile
+class ReportReason(str, enum.Enum):
+    spam = "spam"
+    fake = "fake"
+    inappropriate = "inappropriate"
+    offensive = "offensive"
+    other = "other"
     
+class ReportStatus(str, enum.Enum):
+    pending = "pending"
+    reviewed = "reviewed"
+    dismissed = "dismissed"
+    
+class Report(Base):
+    __tablename__ = "reports"
+    
+    id: Mapped[int] = mapped_column(primary_key=True)
+    reporter_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    reason: Mapped[ReportReason] = mapped_column(Enum(ReportReason, name="report_reason"), nullable=False)
+    status: Mapped[ReportStatus] = mapped_column(Enum(ReportStatus, name="report_status"), nullable=False, server_default=ReportStatus.pending)
+    comment: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    reported_user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True, index=True)
+    reported_review_id: Mapped[int | None] = mapped_column(ForeignKey("reviews.id"), nullable=True, index=True)
+
+    __table_args__ = (
+        UniqueConstraint("reporter_user_id", "reported_user_id", name="uq_report_profile"),
+        UniqueConstraint("reporter_user_id", "reported_review_id", name="uq_report_review"),
+    )

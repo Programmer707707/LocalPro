@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from app.routers import reviews
 from app.routers.uploads import router as uploads
+from app.routers.reports import router as reports
 from app.routers.auth import router as auth_router
 from app.routers.users import router as users_router
 from app.routers.categories import router as categories_router
@@ -26,6 +27,7 @@ app.include_router(categories_router)
 app.include_router(customer_profile_router)
 app.include_router(professional_profile_router)
 app.include_router(uploads)
+app.include_router(reports)
 
 @app.get("/health")
 def health():
