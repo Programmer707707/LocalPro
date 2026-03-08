@@ -104,7 +104,7 @@ def search_professionals(
 
     city: str | None = Query(default=None),
     category_slug: str | None = Query(default=None),
-
+    keyword: str | None = Query(default=None),
     min_price: int | None = Query(default=None, ge=0),
     max_price: int | None = Query(default=None, ge=0),
 
@@ -145,9 +145,10 @@ def search_professionals(
         query = query.filter(ProfessionalProfile.starting_price <= max_price)
 
     if category_slug:
-        query = query.join(ProfessionalProfile.categories).filter(
-            Category.slug == category_slug
-        )
+        query = query.filter(ProfessionalProfile.categories.any(Category.slug == category_slug))
+    
+    if keyword:
+        query = query.filter(ProfessionalProfile.bio.ilike(f"%{keyword}%") | ProfessionalProfile.service_areas.ilike(f"%{keyword}%"))
 
     #Sorting part
     if sort == "rating_desc":
@@ -180,6 +181,8 @@ def search_professionals(
                 "average_rating": float(avg or 0.0),
                 "review_count": int(count or 0),
             },
+            "portfolio": profile.portfolio_images,
+            "view_count": profile.view_count
         }
         for (profile, avg, count) in results
     ]
