@@ -96,7 +96,6 @@ def upsert_my_profile(
     return profile
 
 
-
 SortOption = Literal["rating_desc", "price_asc", "price_desc", "newest"]
 
 @router.get("/search", response_model=list[ProfessionalPublicOut])
@@ -187,7 +186,7 @@ def search_professionals(
 
 
 @router.get("/public/{professional_user_id}", response_model=ProfessionalPublicOut)
-def get_public_professional_profile(professional_user_id: int, db: Session = Depends(get_db)):
+def get_public_professional_profile(professional_user_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     profile = (
         db.query(ProfessionalProfile)
         .join(User, User.id == ProfessionalProfile.user_id)
@@ -201,6 +200,11 @@ def get_public_professional_profile(professional_user_id: int, db: Session = Dep
     
     if not profile:
         raise HTTPException(status_code=404, detail="Professional not found")
+    
+    if user.id != professional_user_id:
+        profile.view_count += 1
+        db.commit()
+        db.refresh(profile)
     
     return profile
 

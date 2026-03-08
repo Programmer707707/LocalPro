@@ -76,6 +76,7 @@ class ProfessionalProfile(Base):
 
     phone: Mapped[str | None] = mapped_column(String(40), nullable=True)
     profile_image_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    view_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
 
     user = relationship("User", back_populates="professional_profile")
     categories = relationship("Category", secondary=professional_profile_categories, lazy="joined")

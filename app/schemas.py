@@ -78,6 +78,7 @@ class ProfessionalProfileOut(BaseModel):
     phone: str | None
     profile_image_url: str | None
     categories: list[CategoryOut]
+    
 
     model_config = {"from_attributes": True}
 
@@ -146,9 +147,9 @@ class ProfessionalPublicOut(BaseModel):
     phone: str | None
     profile_image_url: str | None
     categories: list[CategoryOut]
-    
     rating: RatingSummaryOut
     portfolio: list[PortfolioImageOut]
+    view_count: int
 
     model_config = {"from_attributes": True}
     
