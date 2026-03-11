@@ -8,10 +8,19 @@ from app.routers.categories import router as categories_router
 from app.routers.customer_profile import router as customer_profile_router
 from app.routers.professional_profile import router as professional_profile_router
 from starlette.middleware.sessions import SessionMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 from app.admin import setup_admin
 from app.config import settings
 
 app = FastAPI(title="handyman-backend")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.add_middleware(
     SessionMiddleware,
