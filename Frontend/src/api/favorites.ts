@@ -1,5 +1,5 @@
-import client from "./client"
-import type { Favorite } from "../types"
+import client from "@/api/client"
+import type{ Favorite } from "@/types"
 
 export const getFavorites = async (): Promise<Favorite[]> => {
   const response = await client.get<Favorite[]>("/favorites")

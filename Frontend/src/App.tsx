@@ -1,19 +1,19 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AuthProvider, useAuth } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "@/context/AuthContext";
 import type { ReactNode } from "react";
 
-import HomePage from "./pages/HomePage"
-import LoginPage from "./pages/LoginPage"
-import RegisterPage from "./pages/RegisterPage"
-import SearchPage from "./pages/SearchPage"
-import ProfessionalProfilePage from "./pages/ProfessionalProfilePage"
-import CustomerProfilePage from "./pages/CustomerProfilePage"
-import FavoritesPage from "./pages/FavoritesPage"
-import ProfessionalDashboard from "./pages/ProfessionalDashboard"
-import CategoriesPage from "./pages/CategoriesPage"
-import PortfolioPage from "./pages/PortfolioPage"
-import ProfessionalProfileEdit from "./pages/ProfessionalProfileEdit"
+import HomePage from "@/pages/HomePage"
+import LoginPage from "@/pages/LoginPage"
+import RegisterPage from "@/pages/RegisterPage"
+import SearchPage from "@/pages/SearchPage"
+import ProfessionalProfilePage from "@/pages/ProfessionalProfilePage"
+import CustomerProfilePage from "@/pages/CustomerProfilePage"
+import FavoritesPage from "@/pages/FavoritesPage"
+import ProfessionalDashboard from "@/pages/ProfessionalDashboard"
+import CategoriesPage from "@/pages/CategoriesPage"
+import PortfolioPage from "@/pages/PortfolioPage"
+import ProfessionalProfileEdit from "@/pages/ProfessionalProfileEdit"
 
 
 const queryClient = new QueryClient()

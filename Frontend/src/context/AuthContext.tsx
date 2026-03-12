@@ -5,8 +5,8 @@ import {
   useEffect,              
 } from "react";
 import type {ReactNode} from "react";
-import type { User, LoginIn, RegisterIn } from "../types"
-import * as authApi from "../api/auth"
+import type { User, LoginIn, RegisterIn } from "@/types"
+import * as authApi from "@/api/auth"
 
 interface AuthContextType {
     user: User | null

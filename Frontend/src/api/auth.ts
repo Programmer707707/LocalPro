@@ -1,5 +1,5 @@
-import client from "./client"
-import type { LoginIn, RegisterIn, TokenOut, User } from "../types"
+import client from "@/api/client"
+import type { LoginIn, RegisterIn, TokenOut, User } from "@/types"
 
 export const register = async (data: RegisterIn): Promise<User> => {
   const response = await client.post<User>("/auth/register", data)

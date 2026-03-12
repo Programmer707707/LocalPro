@@ -1,5 +1,5 @@
-import client from "./client"
-import type { Review, ReviewCreate, RatingSummary } from "../types"
+import client from "@/api/client"
+import type { Review, ReviewCreate, RatingSummary } from "@/types"
 
 export const createReview = async (professionalUserId: number, data: ReviewCreate): Promise<Review> => {
   const response = await client.post<Review>(

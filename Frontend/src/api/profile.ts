@@ -1,11 +1,5 @@
-import client from "./client"
-import type {
-  CustomerProfile,
-  CustomerProfileUpdate,
-  ProfessionalProfile,
-  ProfessionalProfileUpdate,
-  ImageKitAuth,
-} from "../types"
+import client from "@/api/client"
+import type { CustomerProfile, CustomerProfileUpdate, ProfessionalProfile, ProfessionalProfileUpdate, ImageKitAuth } from "@/types"
 
 
 export const getCustomerProfile = async (): Promise<CustomerProfile> => {

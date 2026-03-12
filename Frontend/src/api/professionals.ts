@@ -1,5 +1,5 @@
-import client from "./client"
-import type { ProfessionalPublicOut, SearchParams } from "../types"
+import client from "@/api/client"
+import type { ProfessionalPublicOut, SearchParams } from "@/types"
 
 export const searchProfessionals = async (
   params: SearchParams

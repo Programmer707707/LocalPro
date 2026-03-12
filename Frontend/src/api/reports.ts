@@ -1,5 +1,5 @@
-import client from "./client"
-import type { ReportProfileCreate, ReportReviewCreate, ReportOut } from "../types"
+import client from "@/api/client"
+import type { ReportProfileCreate, ReportReviewCreate, ReportOut } from "@/types"
 
 
 export const reportProfile = async (
