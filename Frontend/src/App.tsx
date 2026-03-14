@@ -15,6 +15,8 @@ import ProfessionalDashboard from "@/pages/ProfessionalDashboard"
 import CategoriesPage from "@/pages/CategoriesPage"
 import PortfolioPage from "@/pages/PortfolioPage"
 import ProfessionalProfileEdit from "@/pages/ProfessionalProfileEdit"
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 
 const queryClient = new QueryClient()
@@ -27,21 +29,26 @@ function ProtectedRoute({children}: {children: ReactNode}){
 
 function AppRoutes() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage/>} />
-      <Route path="/login" element={<LoginPage/>} />
-      <Route path="/register" element={<RegisterPage/>} />
-      <Route path="/search" element={<SearchPage/>} />
-      <Route path="/categories" element={<CategoriesPage/>} />
-      <Route path="/professionals/:id" element={<ProfessionalProfilePage/>} />
+    <>
+      <Navbar/>
+      
+      <Routes>
+        <Route path="/" element={<HomePage/>} />
+        <Route path="/login" element={<LoginPage/>} />
+        <Route path="/register" element={<RegisterPage/>} />
+        <Route path="/search" element={<SearchPage/>} />
+        <Route path="/categories" element={<CategoriesPage/>} />
+        <Route path="/professionals/:id" element={<ProfessionalProfilePage/>} />
 
-      <Route path="/profile" element={<ProtectedRoute><CustomerProfilePage /></ProtectedRoute>} />
-      <Route path="/favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
-      <Route path="/dashboard" element={<ProtectedRoute><ProfessionalDashboard /></ProtectedRoute>} />
-      <Route path="/portfolio" element={<ProtectedRoute><PortfolioPage /></ProtectedRoute>} />
-      <Route path="/profile/edit" element={<ProtectedRoute><ProfessionalProfileEdit /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><CustomerProfilePage /></ProtectedRoute>} />
+        <Route path="/favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute><ProfessionalDashboard /></ProtectedRoute>} />
+        <Route path="/portfolio" element={<ProtectedRoute><PortfolioPage /></ProtectedRoute>} />
+        <Route path="/profile/edit" element={<ProtectedRoute><ProfessionalProfileEdit /></ProtectedRoute>} />
 
-    </Routes>
+      </Routes>
+      <Footer/>
+    </>
   )
 }
 
