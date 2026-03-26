@@ -9,7 +9,6 @@ from app.models import User
 #oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 bearer_scheme = HTTPBearer()
 
-
 def get_db():
     db = SessionLocal()
     try:

@@ -59,35 +59,28 @@ export default function ServiceCard({
 
   if (variant === "simple") {
     return (
-      <button
-        onClick={handleClick}
-        className={cn(
-          "group flex flex-col items-center gap-3 p-5 rounded-2xl border border-border bg-card",
-          "hover:border-primary/30 hover:shadow-md transition-all duration-300 hover:-translate-y-1",
-          "text-center w-full",
-          className
-        )}
-      >
-        <div className={cn(
-          "w-12 h-12 rounded-xl flex items-center justify-center text-2xl",
-          "transition-transform duration-300 group-hover:scale-110",
-          iconBg
-        )}>
-          {icon}
-        </div>
+    <button
+      onClick={handleClick}
+      className={cn(
+        "group flex flex-col items-center gap-2 p-4 rounded-2xl border border-border bg-card",
+        "hover:border-primary/30 hover:shadow-md transition-all duration-300 hover:-translate-y-1",
+        "text-center w-full h-full",
+        className
+      )}
+    >
+      <div className={cn(
+        "w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0",
+        "transition-transform duration-300 group-hover:scale-110",
+        iconBg
+      )}>
+        {icon}
+      </div>
 
-        <div>
-          <p className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors">
-            {category.name}
-          </p>
-          {category.suggestions.length > 0 && (
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {category.suggestions.slice(0, 2).join(", ")}
-            </p>
-          )}
-        </div>
-      </button>
-    )
+      <p className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors line-clamp-1">
+        {category.name}
+      </p>
+    </button>
+  )
   }
 
   return (

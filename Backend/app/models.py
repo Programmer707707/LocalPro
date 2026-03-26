@@ -73,6 +73,8 @@ class ProfessionalProfile(Base):
     bio: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     starting_price: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    revolut_tag: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    wise_tag: Mapped[str | None] = mapped_column(String(100), nullable=True)
 
     phone: Mapped[str | None] = mapped_column(String(40), nullable=True)
     profile_image_url: Mapped[str | None] = mapped_column(String(500), nullable=True)

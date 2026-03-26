@@ -5,7 +5,8 @@ from typing import List, Annotated, Literal
 from app.deps import get_db
 from app.deps import get_current_user
 from app.models import ProfessionalProfile, Category, User, UserRole, Review, ProfessionalPortfolioImage
-from app.schemas import ProfessionalProfileOut, ProfessionalProfileUpdate, ProfessionalPublicOut, ProfileImageUpdate, PortfolioImageCreate, PortfolioImageOut
+from app.schemas import ProfessionalProfileOut, ProfessionalProfileUpdate, ProfessionalPublicOut, ProfileImageUpdate, PortfolioImageCreate, PortfolioImageOut, UserPublicOut, RatingSummaryOut
+from app.helper.normalize_tags import normalize_tag
 
 router = APIRouter(prefix="/professionals", tags=["professionals"])
 
@@ -48,7 +49,8 @@ def get_my_profile(db: Session = Depends(get_db), user: User = Depends(get_curre
     if user.role.value != "professional":
         raise HTTPException(status_code=403, detail="forbidden")
 
-    profile = db.query(ProfessionalProfile).filter(ProfessionalProfile.user_id == user.id).first()
+    profile = db.query(ProfessionalProfile).options(joinedload(ProfessionalProfile.portfolio_images), joinedload(ProfessionalProfile.categories)).filter(ProfessionalProfile.user_id == user.id).first()
+    
     if not profile:
         raise HTTPException(status_code=404, detail="professional_profile_not_found")
     return profile
@@ -67,6 +69,7 @@ def upsert_my_profile(
     if not profile:
         if not data.city:
             raise HTTPException(status_code=400, detail="city_required_to_create_profile")
+
         profile = ProfessionalProfile(
             user_id=user.id,
             city=data.city,
@@ -76,6 +79,8 @@ def upsert_my_profile(
             starting_price=data.starting_price,
             phone=data.phone,
             profile_image_url=data.profile_image_url,
+            revolut_tag=normalize_tag(data.revolut_tag),
+            wise_tag=normalize_tag(data.wise_tag),
         )
         db.add(profile)
         db.commit()
@@ -84,6 +89,13 @@ def upsert_my_profile(
     payload = data.model_dump(exclude_unset=True)
 
     category_ids = payload.pop("category_ids", None)
+
+    if "revolut_tag" in payload:
+        payload["revolut_tag"] = normalize_tag(payload["revolut_tag"])
+
+    if "wise_tag" in payload:
+        payload["wise_tag"] = normalize_tag(payload["wise_tag"])
+
     for k, v in payload.items():
         setattr(profile, k, v)
 
@@ -96,7 +108,7 @@ def upsert_my_profile(
     return profile
 
 
-SortOption = Literal["rating_desc", "price_asc", "price_desc", "newest"]
+SortOption = Literal["rating_desc", 'reviews_desc', "price_asc", "price_desc", "newest"]
 
 @router.get("/search", response_model=list[ProfessionalPublicOut])
 def search_professionals(
@@ -107,9 +119,8 @@ def search_professionals(
     keyword: str | None = Query(default=None),
     min_price: int | None = Query(default=None, ge=0),
     max_price: int | None = Query(default=None, ge=0),
-
     sort: SortOption = Query(default="rating_desc"),
-
+    min_rating: float | None = Query(default=None, ge=0, le=5),
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=10, ge=1, le=50),
 ):
@@ -135,7 +146,7 @@ def search_professionals(
     #Filtering funcitonality
     if city:
         query = query.filter(
-            func.lower(ProfessionalProfile.city) == func.lower(city)
+            ProfessionalProfile.city.ilike(f"%{city}%")
         )
 
     if min_price is not None:
@@ -143,24 +154,35 @@ def search_professionals(
 
     if max_price is not None:
         query = query.filter(ProfessionalProfile.starting_price <= max_price)
-
+        
+    if min_rating is not None:
+        query = query.having(func.coalesce(func.avg(Review.rating), 0.0) >= min_rating)
+        
     if category_slug:
         query = query.filter(ProfessionalProfile.categories.any(Category.slug == category_slug))
     
-    if keyword:
-        query = query.filter(ProfessionalProfile.bio.ilike(f"%{keyword}%") | ProfessionalProfile.service_areas.ilike(f"%{keyword}%"))
-
+    if keyword and len(keyword.strip()) >= 2:
+        kw = keyword.strip()
+        query = query.filter(
+            User.first_name.ilike(f"%{kw}%") |
+            User.last_name.ilike(f"%{kw}%") |
+            ProfessionalProfile.bio.ilike(f"%{kw}%") |
+            ProfessionalProfile.service_areas.ilike(f"%{kw}%") |
+            ProfessionalProfile.categories.any(Category.name.ilike(f"%{kw}%"))
+        )
+        
     #Sorting part
     if sort == "rating_desc":
         query = query.order_by(desc(avg_rating))
     elif sort == "price_asc":
         query = query.order_by(asc(ProfessionalProfile.starting_price))
+    elif sort == "reviews_desc":
+        query = query.order_by(desc(review_count))
     elif sort == "price_desc":
         query = query.order_by(desc(ProfessionalProfile.starting_price))
     elif sort == "newest":
         query = query.order_by(desc(ProfessionalProfile.id))
 
-    #Pagination section
     query = query.offset((page - 1) * page_size).limit(page_size)
 
     results = query.all()
@@ -174,6 +196,8 @@ def search_professionals(
             "years_experience": profile.years_experience,
             "bio": profile.bio,
             "starting_price": profile.starting_price,
+            "revolut_tag": profile.revolut_tag,
+            "wise_tag": profile.wise_tag,
             "phone": profile.phone,
             "profile_image_url": profile.profile_image_url,
             "categories": profile.categories,
@@ -181,7 +205,7 @@ def search_professionals(
                 "average_rating": float(avg or 0.0),
                 "review_count": int(count or 0),
             },
-            "portfolio": profile.portfolio_images,
+            "portfolio_images": profile.portfolio_images,
             "view_count": profile.view_count
         }
         for (profile, avg, count) in results
@@ -189,27 +213,60 @@ def search_professionals(
 
 
 @router.get("/public/{professional_user_id}", response_model=ProfessionalPublicOut)
-def get_public_professional_profile(professional_user_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+def get_public_professional_profile(
+    professional_user_id: int,
+    db: Session = Depends(get_db),
+):
     profile = (
         db.query(ProfessionalProfile)
-        .join(User, User.id == ProfessionalProfile.user_id)
-        .options(joinedload(ProfessionalProfile.user), joinedload(ProfessionalProfile.categories), joinedload(ProfessionalProfile.portfolio_images))
-        .filter(
-            ProfessionalProfile.user_id == professional_user_id,
-            User.is_active == True,
-            User.role == UserRole.professional
-        ).first()
+        .filter(ProfessionalProfile.user_id == professional_user_id)
+        .first()
     )
-    
+
     if not profile:
         raise HTTPException(status_code=404, detail="Professional not found")
-    
-    if user.id != professional_user_id:
-        profile.view_count += 1
-        db.commit()
-        db.refresh(profile)
-    
-    return profile
+
+    profile.view_count += 1
+    db.commit()
+
+    user = db.query(User).filter(User.id == professional_user_id).first()
+
+    rating_row = (
+        db.query(
+            func.avg(Review.rating).label("average_rating"),
+            func.count(Review.id).label("review_count"),
+        )
+        .filter(Review.professional_user_id == professional_user_id)
+        .one()
+    )
+
+    portfolio = (
+        db.query(ProfessionalPortfolioImage)
+        .filter(ProfessionalPortfolioImage.professional_profile_id == profile.id)
+        .order_by(ProfessionalPortfolioImage.created_at.desc())
+        .all()
+    )
+
+    return ProfessionalPublicOut(
+        user_id=profile.user_id,
+        user=UserPublicOut.model_validate(user),
+        city=profile.city,
+        service_areas=profile.service_areas,
+        years_experience=profile.years_experience,
+        bio=profile.bio,
+        starting_price=profile.starting_price,
+        revolut_tag=profile.revolut_tag,
+        wise_tag=profile.wise_tag,
+        phone=profile.phone,
+        profile_image_url=profile.profile_image_url,
+        categories=profile.categories,
+        view_count=profile.view_count,
+        rating=RatingSummaryOut(
+            average_rating=float(rating_row.average_rating or 0),
+            review_count=rating_row.review_count,
+        ),
+        portfolio_images=portfolio
+    )
 
 
 @router.patch("/me/profile-image", response_model=ProfessionalProfileOut)
@@ -285,3 +342,23 @@ def get_profile_completeness(db: Session = Depends(get_db), user: User = Depends
         "missing": missing,
         "is_complete": percentage == 100,
     }
+    
+
+@router.delete("/me/portfolio/{image_id}", status_code=204)
+def delete_portfolio_image(
+    image_id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
+    image = db.query(ProfessionalPortfolioImage).filter(
+        ProfessionalPortfolioImage.id == image_id,
+        ProfessionalPortfolioImage.professional_profile_id == db.query(ProfessionalProfile.id)
+            .filter(ProfessionalProfile.user_id == user.id)
+            .scalar_subquery()
+    ).first()
+
+    if not image:
+        raise HTTPException(status_code=404, detail="Image not found")
+
+    db.delete(image)
+    db.commit()

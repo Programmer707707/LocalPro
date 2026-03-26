@@ -27,6 +27,7 @@ import { ThemeToggle } from "@/components/ThemeToggle"
 import { useAuth } from "@/context/AuthContext"
 import { getCategories } from "@/api/categories"
 import type { Category } from "@/types"
+import { getCustomerProfile, getProfessionalProfile } from "@/api/profile"
 
 const CATEGORY_ICONS: Record<string, string> = {
   "construction-repair": "🔨",
@@ -55,6 +56,20 @@ export default function Navbar() {
     queryFn: getCategories,
     staleTime: 1000 * 60 * 10,
   })
+
+    const { data: customerProfile } = useQuery({
+      queryKey: ["customer-profile"],
+      queryFn: getCustomerProfile,
+      enabled: !!user && user.role === "customer",
+      staleTime: 1000 * 60 * 5,
+    })
+
+    const { data: professionalProfile } = useQuery({
+      queryKey: ["professional-profile"],
+      queryFn: getProfessionalProfile,
+      enabled: !!user && user.role === "professional",
+      staleTime: 1000 * 60 * 5,
+    })
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10)
@@ -146,17 +161,6 @@ export default function Navbar() {
                       </div>
                     </button>
                   ))}
-                  <div className="border-t border-border mt-2 pt-2">
-                    <button
-                      onClick={() => {
-                        navigate("/categories")
-                        setCategoriesOpen(false)
-                      }}
-                      className="w-full text-center text-sm text-primary font-medium py-2 hover:bg-accent rounded-lg transition-colors"
-                    >
-                      View All Categories →
-                    </button>
-                  </div>
                 </div>
               )}
             </div>
@@ -195,12 +199,19 @@ export default function Navbar() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0">
-                      <Avatar className="h-9 w-9 border-2 border-primary/20">
-                        <AvatarImage src="" alt={user.first_name} />
+                      {user.role == 'customer' ? 
+                        (<Avatar className="h-9 w-9 border-2 border-primary/20">
+                        <AvatarImage src={customerProfile?.profile_image_url ?? ""} alt={user.first_name} />
                         <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm">
                           {initials}
                         </AvatarFallback>
-                      </Avatar>
+                      </Avatar>) :
+                      <Avatar className="h-9 w-9 border-2 border-primary/20">
+                        <AvatarImage src={professionalProfile?.profile_image_url ?? ""} alt={user.first_name} />
+                        <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm">
+                          {initials}
+                        </AvatarFallback>
+                      </Avatar> }
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56 mt-1">

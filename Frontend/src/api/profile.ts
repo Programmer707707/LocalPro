@@ -1,6 +1,10 @@
 import client from "@/api/client"
-import type { CustomerProfile, CustomerProfileUpdate, ProfessionalProfile, ProfessionalProfileUpdate, ImageKitAuth } from "@/types"
+import type { CustomerProfile, CustomerProfileUpdate, ProfessionalProfile, ProfessionalProfileUpdate, ImageKitAuth, User } from "@/types"
 
+export const updateUser = async (data: {first_name?: string, last_name?: string}): Promise<User> => {
+  const response = await client.put<User>("/users/me", data)
+  return response.data
+}
 
 export const getCustomerProfile = async (): Promise<CustomerProfile> => {
   const response = await client.get<CustomerProfile>("/customers/me")
@@ -74,4 +78,8 @@ export const getProfileCompleteness =
 export const getImageKitAuth = async (): Promise<ImageKitAuth> => {
   const response = await client.get<ImageKitAuth>("/uploads/imagekit-auth")
   return response.data
+}
+
+export const deletePortfolioImage = async (imageId: number): Promise<void> => {
+  await client.delete(`/professionals/me/portfolio/${imageId}`)
 }

@@ -12,7 +12,7 @@ from app.models import (
 #configurations' source: https://aminalaee.github.io/sqladmin/configurations/
 
 class UserAdmin(ModelView, model=User):
-    can_create = True 
+    can_create = False 
     can_delete = False 
     can_edit = True
     
@@ -37,6 +37,7 @@ class CategoryAdmin(ModelView, model=Category):
     icon = "fa-solid fa-list"
 
 class CustomerProfileAdmin(ModelView, model=CustomerProfile):
+    can_create = False
     column_list = [CustomerProfile.id, CustomerProfile.user_id, CustomerProfile.city, CustomerProfile.phone, CustomerProfile.profile_image_url]
     column_searchable_list = [CustomerProfile.city, CustomerProfile.phone]
     name = "Customer Profile"
@@ -44,7 +45,8 @@ class CustomerProfileAdmin(ModelView, model=CustomerProfile):
     icon = "fa-solid fa-people-group"
 
 class ProfessionalProfileAdmin(ModelView, model=ProfessionalProfile):
-    column_list = [ProfessionalProfile.id, ProfessionalProfile.user_id, ProfessionalProfile.city, ProfessionalProfile.years_experience, ProfessionalProfile.starting_price, ProfessionalProfile.phone]
+    can_create = False
+    column_list = [ProfessionalProfile.id, ProfessionalProfile.user_id, ProfessionalProfile.city, ProfessionalProfile.years_experience, ProfessionalProfile.starting_price, ProfessionalProfile.revolut_tag, ProfessionalProfile.wise_tag,ProfessionalProfile.phone]
     column_searchable_list = [ProfessionalProfile.city, ProfessionalProfile.phone]
     column_sortable_list = [ProfessionalProfile.id, ProfessionalProfile.years_experience, ProfessionalProfile.starting_price]
     name = "Professional Profile"
@@ -52,13 +54,16 @@ class ProfessionalProfileAdmin(ModelView, model=ProfessionalProfile):
     icon = "fa-solid fa-briefcase"
 
 class ReviewAdmin(ModelView, model=Review):
+    can_create = False
     column_list = [Review.id, Review.professional_user_id, Review.customer_user_id, Review.rating, Review.comment, Review.created_at]
     column_sortable_list = [Review.id, Review.rating, Review.created_at]
+    column_searchable_list = [Review.id]
     name = "Review"
     name_plural = "Reviews"
     icon = "fa-solid fa-star"
 
 class PortfolioImageAdmin(ModelView, model=ProfessionalPortfolioImage):
+    can_create = False
     column_list = [ProfessionalPortfolioImage.id, ProfessionalPortfolioImage.professional_profile_id, ProfessionalPortfolioImage.url, ProfessionalPortfolioImage.created_at]
     column_sortable_list = [ProfessionalPortfolioImage.id, ProfessionalPortfolioImage.created_at]
     name = "Portfolio Image"
@@ -67,6 +72,8 @@ class PortfolioImageAdmin(ModelView, model=ProfessionalPortfolioImage):
     
     
 class ReportAdmin(ModelView, model=Report):
+    can_edit = True
+    
     column_list = [
         Report.id,
         Report.reporter_user_id,
@@ -76,6 +83,8 @@ class ReportAdmin(ModelView, model=Report):
         Report.status,
         Report.created_at
     ]
+    
+    form_columns = [Report.status]
     
     column_sortable_list = [Report.id, Report.status, Report.reason, Report.created_at]
     name = "Report"

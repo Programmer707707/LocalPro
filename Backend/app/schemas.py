@@ -78,7 +78,10 @@ class ProfessionalProfileOut(BaseModel):
     phone: str | None
     profile_image_url: str | None
     categories: list[CategoryOut]
-    
+    view_count: int = 0
+    portfolio_images: list["PortfolioImageOut"] = []
+    revolut_tag: str | None = None
+    wise_tag: str | None = None
 
     model_config = {"from_attributes": True}
 
@@ -91,6 +94,8 @@ class ProfessionalProfileUpdate(BaseModel):
     phone: str | None = None
     profile_image_url: str | None = None
     category_ids: list[int] | None = None
+    revolut_tag: str | None = None
+    wise_tag: str | None = None
 
 #helper schema
 class UserPublicOut(BaseModel):
@@ -148,8 +153,10 @@ class ProfessionalPublicOut(BaseModel):
     profile_image_url: str | None
     categories: list[CategoryOut]
     rating: RatingSummaryOut
-    portfolio: list[PortfolioImageOut]
+    portfolio_images: list[PortfolioImageOut]
     view_count: int
+    revolut_tag: str | None = None
+    wise_tag: str | None = None
 
     model_config = {"from_attributes": True}
     

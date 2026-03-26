@@ -1,13 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from schemas import FavoriteOut
-from models import User, UserRole, Favorite
+from app.schemas import FavoriteOut
+from app.models import User, UserRole, Favorite
 from sqlalchemy.orm import Session, joinedload
 from app.deps import get_current_user, get_db
 
-router = APIRouter("/favorites", tags=["favorites"])
+router = APIRouter(prefix="/favorites", tags=["favorites"])
 
 @router.post("/{professional_user_id}", status_code=201)
 def add_favorite(professional_user_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    if user.role != UserRole.customer:
+        raise HTTPException(status_code=403, detail="forbidden")
 
     if user.id == professional_user_id:
         raise HTTPException(status_code=400, detail="cannot favorite yourself")

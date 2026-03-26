@@ -65,15 +65,26 @@ export interface CustomerProfileUpdate {
   profile_image_url?: string | null
 }
 
+export interface PortfolioImage {
+  id: number
+  url: string
+  created_at: string
+}
+
 export interface ProfessionalProfile {
   city: string
   service_areas: string
   years_experience: number
   bio: string | null
   starting_price: number | null
+  revolut_tag?: string | null
+  wise_tag?: string | null
   phone: string | null
   profile_image_url: string | null
   categories: Category[]
+  view_count: number
+  portfolio_images: PortfolioImage[]
+
 }
 
 export interface ProfessionalProfileUpdate {
@@ -82,20 +93,17 @@ export interface ProfessionalProfileUpdate {
   years_experience?: number | null
   bio?: string | null
   starting_price?: number | null
+  revolut_tag?: string | null
+  wise_tag?: string | null
   phone?: string | null
   profile_image_url?: string | null
   category_ids?: number[] | null
+
 }
 
 export interface RatingSummary {
   average_rating: number
   review_count: number
-}
-
-export interface PortfolioImage {
-  id: number
-  url: string
-  created_at: string
 }
 
 export interface ProfessionalPublicOut {
@@ -106,11 +114,13 @@ export interface ProfessionalPublicOut {
   years_experience: number
   bio: string | null
   starting_price: number | null
+  revolut_tag?: string | null
+  wise_tag?: string | null
   phone: string | null
   profile_image_url: string | null
   categories: Category[]
   rating: RatingSummary
-  portfolio: PortfolioImage[]
+  portfolio_images: PortfolioImage[]
   view_count: number
 }
 

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { Shield, Github, Twitter, Instagram, ArrowRight } from "lucide-react"
+import { Shield, ArrowRight } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
 
 const CATEGORY_LINKS = [
@@ -15,29 +15,19 @@ const CATEGORY_LINKS = [
 
 const EXPLORE_LINKS = [
   { label: "Find Professionals", href: "/search" },
-  { label: "Browse Categories", href: "/categories" },
   { label: "How It Works", href: "/#how-it-works" },
 ]
 
 const SUPPORT_LINKS = [
   { label: "Help Center", href: "#" },
-  { label: "Safety", href: "#" },
   { label: "Trust & Quality", href: "#" },
-  { label: "Contact Us", href: "#" },
 ]
 
 const PROFESSIONAL_LINKS = [
   { label: "Join as a Pro", href: "/register" },
   { label: "Pro Dashboard", href: "/dashboard" },
-  { label: "Success Guide", href: "#" },
-  { label: "Pro Resources", href: "#" },
 ]
 
-const SOCIAL_LINKS = [
-  { icon: Github, href: "#", label: "GitHub" },
-  { icon: Twitter, href: "#", label: "Twitter" },
-  { icon: Instagram, href: "#", label: "Instagram" },
-]
 
 export default function Footer() {
   return (
@@ -69,19 +59,6 @@ export default function Footer() {
                 compare, and connect with service providers quickly and
                 confidently.
               </p>
-
-              <div className="mt-6 flex flex-wrap items-center gap-3">
-                {SOCIAL_LINKS.map(({ icon: Icon, href, label }) => (
-                  <a
-                    key={label}
-                    href={href}
-                    aria-label={label}
-                    className="group flex h-10 w-10 items-center justify-center rounded-full border border-border/60 bg-muted/50 text-muted-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/30 hover:bg-primary hover:text-primary-foreground hover:shadow-md"
-                  >
-                    <Icon className="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
-                  </a>
-                ))}
-              </div>
 
               <div className="mt-8 rounded-2xl border border-border/60 bg-muted/40 p-4 shadow-sm backdrop-blur-sm">
                 <div className="flex items-start gap-3">
@@ -203,12 +180,7 @@ export default function Footer() {
               >
                 Terms of Service
               </Link>
-              <Link
-                to="#"
-                className="text-sm text-muted-foreground transition-colors hover:text-primary"
-              >
-                Cookies
-              </Link>
+             
             </div>
           </div>
         </div>

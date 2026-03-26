@@ -26,6 +26,14 @@ client.interceptors.response.use(
             window.location.href = "/login"
         }
 
+        if (error.response?.status === 403) {
+            const detail = error.response?.data?.detail
+            if (detail === "account_disabled") {
+                localStorage.removeItem("token")
+                window.location.href = "/login?blocked=true"
+        }
+    }
+
         return Promise.reject(error)
     }
 )
