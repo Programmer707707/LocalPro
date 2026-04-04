@@ -10,7 +10,12 @@ router = APIRouter(prefix="/customers", tags=["customers"])
 
 @router.get("/me", response_model=CustomerProfileOut)
 def get_my_profile(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    
+    if user.role != UserRole.customer:
+        raise HTTPException(status_code=403, detail="forbidden")
+    
     profile = db.query(CustomerProfile).filter(CustomerProfile.user_id == user.id).first()
+    
     if not profile:
         profile = CustomerProfile(user_id=user.id)
         db.add(profile)
@@ -40,12 +45,12 @@ def update_customer_profile_image(data: ProfileImageUpdate, db: Session = Depend
     if user.role != UserRole.customer:
         raise HTTPException(status_code=403, detail="forbidden")
     
-    profile = db.query(User).filter(CustomerProfile.id == user.id).first()
+    profile = db.query(CustomerProfile).filter(CustomerProfile.user_id == user.id).first()
     if not profile:
         profile = CustomerProfile(user_id = user.id)
         db.add(profile)
         db.commit()
-        db.refresh()
+        db.refresh(profile)
         
     profile.profile_image_url = data.profile_image_url
     db.commit()

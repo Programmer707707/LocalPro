@@ -1,39 +1,58 @@
-import { Shield } from "lucide-react"
+import { Shield, UserCheck, Search, Award } from "lucide-react"
 
-export default function LoginInfo(){
+const HIGHLIGHTS = [
+  { icon: Search, label: "Advanced Search" },
+  { icon: UserCheck, label: "Verified Pros" },
+  { icon: Award, label: "Quality Ratings" },
+]
+
+export default function LoginInfo() {
   return (
-     <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary/90 to-primary flex-col items-center justify-center p-12 relative overflow-hidden">
+    <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary/95 to-primary flex-col items-center justify-center p-12 relative overflow-hidden">
+      
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-white/10 blur-[100px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-white/5 blur-[120px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle,white_1px,transparent_1px)] bg-[size:40px_40px] opacity-[0.03]" />
+      </div>
 
-        <div className="absolute top-0 left-0 w-full h-full">
-          <div className="absolute top-20 left-20 w-64 h-64 rounded-full bg-white/5 blur-3xl" />
-          <div className="absolute bottom-20 right-20 w-48 h-48 rounded-full bg-white/10 blur-2xl" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
+      <div className="relative z-10 text-center text-white">
+        <div className="w-24 h-24 bg-white/10 border border-white/20 rounded-[2rem] flex items-center justify-center mx-auto mb-10 backdrop-blur-xl shadow-2xl transition-transform hover:scale-105 duration-500">
+          <Shield className="w-12 h-12 text-white" />
         </div>
 
-        <div className="relative z-10 text-center text-white">
-          <div className="w-20 h-20 bg-white/20 rounded-3xl flex items-center justify-center mx-auto mb-8 backdrop-blur-sm">
-            <Shield className="w-10 h-10 text-white" />
-          </div>
-          <h1 className="text-4xl font-bold mb-4 tracking-tight">
-            Welcome Back
-          </h1>
-          <p className="text-lg text-white/80 max-w-sm leading-relaxed">
-            Sign in to connect with trusted local professionals in your area.
-          </p>
+        <h1 className="text-5xl font-extrabold mb-6 tracking-tight">
+          Local<span className="text-white/70">Pro</span>
+        </h1>
+        
+        <p className="text-xl text-white/80 max-w-md mx-auto leading-relaxed mb-16">
+          The most reliable way to discover and connect with local service professionals.
+        </p>
 
-          <div className="grid grid-cols-3 gap-6 mt-12">
-            {[
-              { value: "100+", label: "Professionals" },
-              { value: "4.9", label: "Avg Rating" },
-              { value: "50+", label: "Services Done" },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center">
-                <p className="text-2xl font-bold text-white">{stat.value}</p>
-                <p className="text-sm text-white/70 mt-1">{stat.label}</p>
+        <div className="grid grid-cols-3 gap-4 w-full max-w-lg mx-auto">
+          {HIGHLIGHTS.map((item) => (
+            <div 
+              key={item.label} 
+              className="group flex flex-col items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm transition-all hover:bg-white/10"
+            >
+              <div className="p-3 rounded-xl bg-white/10 group-hover:bg-white/20 transition-colors">
+                <item.icon className="w-6 h-6 text-white" />
               </div>
-            ))}
+              <p className="text-[10px] font-bold text-white/90 tracking-widest uppercase">
+                {item.label}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-16 flex flex-col items-center gap-4">
+          <div className="h-px w-24 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          <div className="inline-flex items-center gap-2 text-xs font-medium text-white/60 tracking-wide uppercase">
+            <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            Verified Directory Access
           </div>
         </div>
       </div>
+    </div>
   )
 }

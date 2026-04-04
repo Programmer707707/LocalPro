@@ -41,28 +41,15 @@ export default function Hero({
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary text-sm font-medium px-4 py-2 rounded-full mb-6 border border-primary/20">
+          {/* <div className="inline-flex items-center gap-2 bg-primary/10 text-primary text-sm font-medium px-4 py-2 rounded-full mb-6 border border-primary/20">
             <Shield className="w-4 h-4" />
             Trusted by 500+ customers nationwide
-          </div>
+          </div> */}
 
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-foreground tracking-tight leading-tight mb-6">
             Find Trusted Local{" "}
             <span className="text-primary relative">
               Professionals
-              <svg
-                className="absolute -bottom-2 left-0 w-full"
-                viewBox="0 0 300 12"
-                fill="none"
-              >
-                <path
-                  d="M1 9 C75 3, 150 3, 299 9"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  className="text-primary/40"
-                />
-              </svg>
             </span>{" "}
             Near You
           </h1>
@@ -120,19 +107,6 @@ export default function Hero({
               </Button>
             </div>
           </form>
-
-          <div className="flex flex-wrap items-center justify-center gap-2 mt-5">
-            <span className="text-sm text-muted-foreground">Popular:</span>
-            {categories.slice(0, 4).map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => onCategoryNavigate(cat.slug)}
-                className="text-sm text-primary hover:underline font-medium"
-              >
-                {cat.name}
-              </button>
-            ))}
-          </div>
         </div>
       </div>
     </section>

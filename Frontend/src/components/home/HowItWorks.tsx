@@ -6,7 +6,7 @@ const HOW_IT_WORKS = [
     icon: Search,
     title: "Search",
     description:
-      "Tell us what you need and where. We'll find matching professionals near you instantly.",
+      "Tell us what you need and where. We'll find matching professionals from your city",
   },
   {
     step: "02",
@@ -20,7 +20,7 @@ const HOW_IT_WORKS = [
     icon: ThumbsUp,
     title: "Contact",
     description:
-      "Get free quotes and contact professionals directly through the platform.",
+      "Contact professionals by checking their contacts on their profile page",
   },
 ]
 

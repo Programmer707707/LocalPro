@@ -8,11 +8,11 @@ router = APIRouter(prefix="/favorites", tags=["favorites"])
 
 @router.post("/{professional_user_id}", status_code=201)
 def add_favorite(professional_user_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    if user.role != UserRole.customer:
-        raise HTTPException(status_code=403, detail="forbidden")
-
     if user.id == professional_user_id:
         raise HTTPException(status_code=400, detail="cannot favorite yourself")
+    
+    if user.role != UserRole.customer:
+        raise HTTPException(status_code=403, detail="forbidden")
     
     professional = db.query(User).filter(User.id == professional_user_id, User.role == UserRole.professional, User.is_active == True).first()
     if not professional:

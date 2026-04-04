@@ -18,6 +18,7 @@ import ProfessionalProfileEdit from "@/pages/ProfessionalProfileEdit"
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import NotFoundPage from "./pages/NotFoundPage";
+import ScrollToHash from "./components/ScrollToHash";
 
 
 const queryClient = new QueryClient()
@@ -47,8 +48,8 @@ function ProfessionalRoute({ children }: { children: React.ReactNode }) {
 function AppRoutes() {
   return (
     <>
+      <ScrollToHash/>
       <Navbar/>
-      
       <Routes>
         <Route path="/" element={<HomePage/>} />
         <Route path="/login" element={<LoginPage/>} />

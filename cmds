@@ -1,0 +1,11 @@
+Backend:
+run: uvicorn app.main:app --reload port=xxxx
+test: 
+1) python -m pytest tests/*.py 
+OR 
+2)pytest
+
+Frontend
+run: npm run dev
+test: npm test 
+cypress test: npx cypress run

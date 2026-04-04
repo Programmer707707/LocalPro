@@ -1,4 +1,4 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     database_url: str
@@ -10,7 +10,13 @@ class Settings(BaseSettings):
     imagekit_private_key: str
     imagekit_url_endpoint: str
     
-    class Config:
-        env_file = ".env"
+    SQLALCHEMY_TEST_DATABASE_URL: str
+    
+    GMAIL_USER: str
+    GMAIL_APP_PASSWORD: str
+    SMTP_HOST: str
+    SMTP_PORT: int
+    
+    model_config =SettingsConfigDict(env_file = ".env")
 
 settings = Settings()

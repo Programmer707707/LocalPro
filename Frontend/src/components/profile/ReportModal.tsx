@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import type { ReportReason } from "@/types"
+import { useAuth } from "@/context/AuthContext"
 
 const REPORT_REASONS: { value: ReportReason; label: string }[] = [
   { value: "spam", label: "Spam" },
@@ -19,6 +20,7 @@ interface ReportModalProps {
   reason: ReportReason
   comment: string
   isPending: boolean
+  professionalId: string
   onClose: () => void
   onReasonChange: (reason: ReportReason) => void
   onCommentChange: (comment: string) => void
@@ -36,6 +38,7 @@ export default function ReportModal({
   onCommentChange,
   onSubmit,
 }: ReportModalProps) {
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-md rounded-3xl border-border/60 p-0 overflow-hidden">

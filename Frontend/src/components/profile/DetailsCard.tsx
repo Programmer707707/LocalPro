@@ -1,4 +1,4 @@
-import { MapPin, Phone, Briefcase, Eye, Wallet, ArrowUpRight, CreditCard } from "lucide-react"
+import { MapPin, Phone, Briefcase, Eye, Wallet } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import type { ProfessionalPublicOut } from "@/types"

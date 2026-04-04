@@ -39,10 +39,15 @@ export default function RegisterForm() {
     setError(null)
     if (validatePassword(password).length > 0) return
 
+    const selectedRole = role
     setLoading(true)
     try {
-      await register({ first_name: firstName, last_name: lastName, email, password, role })
-      navigate(role === "professional" ? "/dashboard" : "/")
+      const registeredUser = await register({ first_name: firstName, last_name: lastName, email, password, role: selectedRole })
+      console.log("selectedRole after register:", selectedRole)
+      console.log("registeredUser:", registeredUser)
+      console.log("registeredUser.role:", registeredUser?.role)
+      console.log("local role state:", role)
+      navigate(registeredUser?.role === "professional" ? "/dashboard" : "/")
     } catch (err: any) {
       setError(err?.response?.data?.detail ?? "Registration failed. Please try again.")
     } finally {

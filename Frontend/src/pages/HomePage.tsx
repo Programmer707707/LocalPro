@@ -8,7 +8,7 @@ import Hero from "@/components/home/Hero"
 import Categories from "@/components/home/Categories"
 import HowItWorks from "@/components/home/HowItWorks"
 import FeaturedProfessionals from "@/components/home/FeaturedProfessionals"
-import Stats from "@/components/home/Stats"
+import PlatformHighlights from "@/components/home/PlatformHighlights"
 import Testimonials from "@/components/home/Testimonials"
 import CTA from "@/components/home/CTA"
 
@@ -68,9 +68,9 @@ export default function HomePage() {
         loading={loadingPros}
       />
 
-      <Stats />
+      <PlatformHighlights />
 
-      <Testimonials />
+      {/* <Testimonials /> */}
 
       <CTA />
     </div>

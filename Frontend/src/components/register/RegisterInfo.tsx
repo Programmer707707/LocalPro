@@ -4,13 +4,11 @@ export default function RegisterInfo() {
   const benefits = [
     "Find verified local professionals instantly",
     "Compare ratings and reviews",
-    "Contact professionals directly",
     "Free to join as a customer or professional",
   ]
 
   return (
     <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary/90 to-primary flex-col items-center justify-center p-12 relative overflow-hidden">
-      {/* Background Orbs */}
       <div className="absolute top-0 left-0 w-full h-full">
         <div className="absolute top-20 left-20 w-64 h-64 rounded-full bg-white/5 blur-3xl" />
         <div className="absolute bottom-20 right-20 w-48 h-48 rounded-full bg-white/10 blur-2xl" />
@@ -18,8 +16,8 @@ export default function RegisterInfo() {
       </div>
 
       <div className="relative z-10 text-center text-white">
-        <div className="w-20 h-20 bg-white/20 rounded-3xl flex items-center justify-center mx-auto mb-8 backdrop-blur-sm">
-          <Shield className="w-10 h-10 text-white" />
+        <div className="w-24 h-24 bg-white/10 border border-white/20 rounded-[2rem] flex items-center justify-center mx-auto mb-10 backdrop-blur-xl shadow-2xl transition-transform hover:scale-105 duration-500">
+          <Shield className="w-12 h-12 text-white" />
         </div>
         <h1 className="text-4xl font-bold mb-4 tracking-tight">Join LocalPro</h1>
         <p className="text-lg text-white/80 max-w-sm leading-relaxed">

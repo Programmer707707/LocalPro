@@ -9,7 +9,7 @@ from app.schemas import ReviewCreate, ReviewOut, RatingSummaryOut
 router = APIRouter(prefix="/professionals", tags=["reviews"])
 
 
-@router.post("/{professional_user_id}/reviews", response_model=ReviewOut)
+@router.post("/{professional_user_id}/reviews", response_model=ReviewOut, status_code=201)
 def create_review(
     professional_user_id: int,
     data: ReviewCreate,

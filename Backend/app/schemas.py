@@ -1,3 +1,4 @@
+import re
 from typing import Optional, Literal
 from pydantic import BaseModel, Field, EmailStr, field_validator
 from app.models import ReportStatus, ReportReason
@@ -12,6 +13,19 @@ class RegisterIn(BaseModel):
     last_name: str = Field(min_length=2, max_length=100)
     password: str = Field(min_length=8, max_length=72)
     role: Optional[Role] = "customer"
+    
+    @field_validator('password')
+    @classmethod
+    def validate_method(cls, value: str) -> str:
+        if len(value) < 8:
+            raise ValueError("Password must be at least 8 characters long.")
+        if not re.search(r"[A-Z]", value):
+            raise ValueError("Password must contain at least one uppercase letter.")
+        if not re.search(r"[0-9]", value):
+            raise ValueError("Password must contain at least one number.")
+        if not re.search(r"[!@#$%^&*(),.?\":{}|<>_\-\\/\[\]+=`~;']", value):
+            raise ValueError("Password must contain at least one special character.")
+        return value
 
 class LoginIn(BaseModel):
     email: EmailStr
@@ -115,7 +129,7 @@ class ReviewCreate(BaseModel):
 class ReviewOut(BaseModel):
     id: int 
     rating: int 
-    comment: str 
+    comment: str | None
     created_at: datetime
     
     model_config = {"from_attributes": True} 
@@ -187,3 +201,10 @@ class ReportOut(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+    
+class OTPRequest(BaseModel):
+    email: str
+
+class OTPVerify(BaseModel):
+    email: str
+    code: str

@@ -13,7 +13,7 @@ interface ProfileCardProps {
   favoritePending: boolean
   onFavorite: () => void
   onReview: () => void
-  onReport: () => void
+  onReport: (() => void) | undefined
 }
 
 export default function ProfileCard({
@@ -100,7 +100,7 @@ export default function ProfileCard({
                 </Button>
               </>
             )}
-            {user && (
+            {user && onReport && (
               <Button
                 variant="ghost"
                 onClick={onReport}

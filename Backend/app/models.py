@@ -85,7 +85,6 @@ class ProfessionalProfile(Base):
     portfolio_images = relationship("ProfessionalPortfolioImage", back_populates="professional_profile", cascade="all, delete-orphan")
 
 
-#Review Model
 class Review(Base):
     __tablename__ = "reviews"
     
@@ -120,7 +119,6 @@ class Review(Base):
     )
     
     
-#Portfolio Images 
 class ProfessionalPortfolioImage(Base):
     __tablename__ = "professional_portfolio_images"
     
@@ -132,7 +130,6 @@ class ProfessionalPortfolioImage(Base):
     professional_profile = relationship("ProfessionalProfile", back_populates="portfolio_images")
     
 
-#Favorites
 class Favorite(Base):
     __tablename__ = "favorites"
     __table_args__ = (
@@ -147,7 +144,6 @@ class Favorite(Base):
     professional = relationship("User", foreign_keys=[professional_user_id])
     
 
-#Report Profile
 class ReportReason(str, enum.Enum):
     spam = "spam"
     fake = "fake"
@@ -177,3 +173,13 @@ class Report(Base):
         UniqueConstraint("reporter_user_id", "reported_user_id", name="uq_report_profile"),
         UniqueConstraint("reporter_user_id", "reported_review_id", name="uq_report_review"),
     )
+    
+class OTPCode(Base):
+    __tablename__ = "otp_codes"
+    
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    email: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    code: Mapped[str] = mapped_column(String(6), nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    is_used: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

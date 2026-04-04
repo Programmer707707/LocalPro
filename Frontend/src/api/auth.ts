@@ -19,3 +19,12 @@ export const getMe = async (): Promise<User> => {
   const response = await client.get<User>("/users/me")
   return response.data
 }
+
+export const requestOtp = async (email: string): Promise<void> => {
+  await client.post("/auth/request-otp", { email })
+}
+
+export const verifyOtp = async (email: string, code: string): Promise<TokenOut> => {
+  const response = await client.post<TokenOut>("/auth/verify-otp", { email, code })
+  return response.data
+}

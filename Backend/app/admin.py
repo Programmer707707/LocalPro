@@ -1,9 +1,9 @@
-from sqladmin import Admin, ModelView
+from sqladmin import Admin
 from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
 
 from app.db import engine, SessionLocal
-from app.models import User, UserRole, Category, Review
+from app.models import User, UserRole
 from app.security import verify_password
 from app.config import settings
 

@@ -9,7 +9,7 @@ interface ServiceCardProps {
   className?: string
 }
 
-const CATEGORY_ICONS: Record<string, string> = {
+export const CATEGORY_ICONS: Record<string, string> = {
   "construction-repair": "🔨",
   "auto-services": "🚗",
   "appliance-repair": "🔧",
@@ -18,6 +18,16 @@ const CATEGORY_ICONS: Record<string, string> = {
   "marketing-advertising": "📣",
   "legal-finance": "⚖️",
   "beauty-health": "💄",
+  "it-tech-support": "💻",
+  "photography-videography": "📷",
+  "events-entertainment": "🎉",
+  "pet-services": "🐾",
+  "delivery-logistics": "🚚",
+  "design-architecture": "🏛️",
+  "childcare-elderly-care": "👶",
+  "food-catering": "🍽️",
+  "fitness-wellness": "💪",
+  "translation-interpretation": "🌐",
 }
 
 const CATEGORY_GRADIENTS: Record<string, string> = {
@@ -29,6 +39,16 @@ const CATEGORY_GRADIENTS: Record<string, string> = {
   "marketing-advertising": "from-pink-500/10 to-pink-500/5 hover:from-pink-500/20 hover:to-pink-500/10",
   "legal-finance": "from-indigo-500/10 to-indigo-500/5 hover:from-indigo-500/20 hover:to-indigo-500/10",
   "beauty-health": "from-rose-500/10 to-rose-500/5 hover:from-rose-500/20 hover:to-rose-500/10",
+  "it-tech-support": "from-orange-500/10 to-orange-500/5 hover:from-orange-500/20 hover:to-orange-500/10",
+  "photography-videography": "from-blue-500/10 to-blue-500/5 hover:from-blue-500/20 hover:to-blue-500/10",
+  "events-entertainment": "from-green-500/10 to-green-500/5 hover:from-green-500/20 hover:to-green-500/10",
+  "pet-services": "from-indigo-500/10 to-indigo-500/5 hover:from-indigo-500/20 hover:to-indigo-500/10",
+  "delivery-logistics": "from-pink-500/10 to-pink-500/5 hover:from-pink-500/20 hover:to-pink-500/10",
+  "design-architecture": "from-green-500/10 to-green-500/5 hover:from-green-500/20 hover:to-green-500/10",
+  "childcare-elderly-care": "from-yellow-500/10 to-yellow-500/5 hover:from-yellow-500/20 hover:to-yellow-500/10",
+  "food-catering": "from-blue-500/10 to-blue-500/5 hover:from-blue-500/20 hover:to-blue-500/10",
+  "fitness-wellness": "from-purple-500/10 to-purple-500/5 hover:from-purple-500/20 hover:to-purple-500/10",
+  "translation-interpretation": "from-orange-500/10 to-orange-500/5 hover:from-orange-500/20 hover:to-orange-500/10",
 }
 
 const CATEGORY_ICON_BG: Record<string, string> = {
@@ -40,6 +60,14 @@ const CATEGORY_ICON_BG: Record<string, string> = {
   "marketing-advertising": "bg-pink-500/15 text-pink-600",
   "legal-finance": "bg-indigo-500/15 text-indigo-600",
   "beauty-health": "bg-rose-500/15 text-rose-600",
+  "it-tech-support": "bg-orange-500/15 text-orange-600",
+  "photography-videography": "bg-blue-500/15 text-blue-600",
+  "events-entertainment": "bg-purple-500/15 text-purple-600",
+  "pet-services": "bg-green-500/15 text-green-600",
+  "delivery-logistics": "bg-yellow-500/15 text-yellow-600",
+  "design-architecture": "bg-pink-500/15 text-pink-600",
+  "childcare-elderly-care": "bg-indigo-500/15 text-indigo-600",
+  "food-catering": "bg-rose-500/15 text-rose-600",
 }
 
 export default function ServiceCard({

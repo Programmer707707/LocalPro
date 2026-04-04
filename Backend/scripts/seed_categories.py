@@ -19,6 +19,16 @@ CATEGORIES = [
     ("Marketing & Advertising", "social media, seo, graphic design, video production, copywriting, photo editing, logo design, content creation, video montage"),
     ("Legal & Finance", "legal consultation, tax services, accounting, notary, insurance, business registration, contract drafting"),
     ("Beauty & Health", "haircut, massage, manicure, makeup, personal training, nail art, eyebrow design, facial, pedicure, hair coloring"),
+    ("IT & Tech Support", "software development, computer repair, laptop repair, virus removal, network setup, wifi installation, data recovery, software installation, printer setup, smart home setup"),
+    ("Photography & Videography", "wedding photography, portrait photography, product photography, real estate photography, event videography, drone footage, photo printing"),
+    ("Events & Entertainment", "wedding planning, event decoration, catering, DJ services, live music, birthday party planning, balloon decoration, master of ceremonies"),
+    ("Pet Services", "dog walking, pet grooming, pet sitting, veterinary home visit, pet training, aquarium setup"),
+    ("Delivery & Logistics", "courier delivery, furniture delivery, cargo transport, airport transfer, grocery delivery, document delivery"),
+    ("Design & Architecture", "interior design, landscape design, 3d rendering, architectural drawing, space planning, furniture design"),
+    ("Childcare & Elderly Care", "babysitting, nanny services, elderly care, disability assistance, after school care, homework help"),
+    ("Food & Catering", "home cooking, meal prep, private chef, baking, wedding cake, catering for events, food delivery"),
+    ("Fitness & Wellness", "personal trainer, yoga instructor, nutritionist, physiotherapy, meditation coach, pilates, boxing coach"),
+    ("Translation & Interpretation", "document translation, live interpretation, subtitling, proofreading, certified translation, language consulting"),
 ]
 
 def seed():

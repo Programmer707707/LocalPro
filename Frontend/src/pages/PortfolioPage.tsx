@@ -4,6 +4,7 @@ import { toast } from "sonner"
 import LoadingSpinner from "@/components/LoadingSpinner"
 import { getProfessionalProfile, getImageKitAuth, deletePortfolioImage, addPortfolioImage } from "@/api/profile"
 import { useAuth } from "@/context/AuthContext"
+import {X} from "lucide-react"
 
 import PortfolioHeader from "@/components/portfolio/PortfolioHeader"
 import PortfolioEmptyState from "@/components/portfolio/PortfolioEmptyState"
@@ -93,8 +94,26 @@ export default function PortfolioPage() {
       </div>
 
       {selectedImage && (
-        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4" onClick={() => setSelectedImage(null)}>
-          <img src={selectedImage} alt="Portfolio Large" className="max-w-full max-h-[90vh] rounded-2xl object-contain" onClick={(e) => e.stopPropagation()} />
+        <div 
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-300" 
+          onClick={() => setSelectedImage(null)}
+        >
+          <div className="relative max-w-5xl w-full flex items-center justify-center">
+            <button
+              onClick={() => setSelectedImage(null)}
+              className="absolute -top-12 right-0 md:-right-12 p-2 text-white/70 hover:text-white transition-colors"
+              aria-label="Close"
+            >
+              <X className="w-8 h-8" />
+            </button>
+            
+            <img 
+              src={selectedImage} 
+              alt="Portfolio Large" 
+              className="max-w-full max-h-[85vh] rounded-2xl object-contain shadow-2xl" 
+              onClick={(e) => e.stopPropagation()} 
+            />
+          </div>
         </div>
       )}
     </div>

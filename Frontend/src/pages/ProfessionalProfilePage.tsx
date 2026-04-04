@@ -55,6 +55,8 @@ export default function ProfessionalProfilePage() {
   })
 
   const isFavorited = favoriteData?.is_favorited ?? false
+  const isOwnProfile = user?.id === professionalId;
+
 
   const favoriteMutation = useMutation({
     mutationFn: () =>
@@ -164,7 +166,7 @@ export default function ProfessionalProfilePage() {
               favoritePending={favoriteMutation.isPending}
               onFavorite={() => favoriteMutation.mutate()}
               onReview={() => setShowReviewModal(true)}
-              onReport={() => setShowReportProfileModal(true)}
+              onReport={!isOwnProfile ? () => setShowReportProfileModal(true) : undefined}
             />
             <DetailsCard
               professional={professional}
@@ -216,22 +218,11 @@ export default function ProfessionalProfilePage() {
         reason={reportReason}
         comment={reportComment}
         isPending={reportProfileMutation.isPending}
+        professionalId = {id || ""}
         onClose={() => setShowReportProfileModal(false)}
         onReasonChange={setReportReason}
         onCommentChange={setReportComment}
         onSubmit={() => reportProfileMutation.mutate()}
-      />
-
-      <ReportModal
-        open={showReportReviewModal}
-        title="Report Review"
-        reason={reportReason}
-        comment={reportComment}
-        isPending={reportReviewMutation.isPending}
-        onClose={() => setShowReportReviewModal(false)}
-        onReasonChange={setReportReason}
-        onCommentChange={setReportComment}
-        onSubmit={() => reportReviewMutation.mutate()}
       />
     </div>
   )
